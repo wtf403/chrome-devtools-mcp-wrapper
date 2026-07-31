@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "chrome-devtools-wrapper": {
+      "command": "node",
+      "args": ["./dist/bin.js"],
+      "env": {}
+    }
+  }
+}
