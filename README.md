@@ -187,7 +187,7 @@ npx chrome-devtools-mcp-wrapper@latest [options]
 ## Development
 
 ```bash
-git clone https://github.com/your-org/chrome-devtools-mcp-wrapper
+git clone https://github.com/wtf403/chrome-devtools-mcp
 cd chrome-devtools-mcp-wrapper
 npm install
 npm run build

@@ -31,11 +31,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/chrome-devtools-mcp-wrapper"
+    "url": "git+https://github.com/wtf403/chrome-devtools-mcp.git"
   },
-  "homepage": "https://github.com/your-org/chrome-devtools-mcp-wrapper#readme",
+  "homepage": "https://github.com/wtf403/chrome-devtools-mcp#readme",
   "bugs": {
-    "url": "https://github.com/your-org/chrome-devtools-mcp-wrapper/issues"
+    "url": "https://github.com/wtf403/chrome-devtools-mcp/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0"
