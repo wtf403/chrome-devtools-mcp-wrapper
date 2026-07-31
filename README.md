@@ -28,19 +28,6 @@ Add the following config to your MCP client:
 }
 ```
 
-To connect to an already-running Chrome instance at startup:
-
-```json
-{
-  "mcpServers": {
-    "chrome-devtools-wrapper": {
-      "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp-wrapper@latest", "--browser-url=http://127.0.0.1:9222"]
-    }
-  }
-}
-```
-
 > [!NOTE]
 > Using `chrome-devtools-mcp-wrapper@latest` ensures your MCP client always uses the latest version.
 
