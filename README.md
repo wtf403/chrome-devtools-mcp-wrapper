@@ -28,6 +28,19 @@ Add the following config to your MCP client:
 }
 ```
 
+To connect to an already-running Chrome instance at startup:
+
+```json
+{
+  "mcpServers": {
+    "chrome-devtools-wrapper": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp-wrapper@latest", "--browser-url=http://127.0.0.1:9222"]
+    }
+  }
+}
+```
+
 > [!NOTE]
 > Using `chrome-devtools-mcp-wrapper@latest` ensures your MCP client always uses the latest version.
 
@@ -36,37 +49,53 @@ Add the following config to your MCP client:
 <details>
   <summary>Claude Code</summary>
 
+**Install via CLI (MCP only)**
+
+Use the Claude Code CLI to add the wrapper ([guide](https://code.claude.com/docs/en/mcp)):
+
 ```bash
 claude mcp add chrome-devtools-wrapper --scope user -- npx -y chrome-devtools-mcp-wrapper@latest
 ```
-
-Or add the config manually to your Claude Code settings.
-
-</details>
-
-<details>
-  <summary>Cursor</summary>
-
-Go to `Cursor Settings` → `MCP` → `New MCP Server` and paste the standard config above.
 
 </details>
 
 <details>
   <summary>Copilot / VS Code</summary>
 
-**macOS / Linux:**
+**Click the button to install:**
+
+[<img src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Server&color=0098FF" alt="Install in VS Code">](https://vscode.dev/redirect/mcp/install?name=chrome-devtools-wrapper&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22chrome-devtools-mcp-wrapper%40latest%22%5D%2C%22env%22%3A%7B%7D%7D)
+
+[<img src="https://img.shields.io/badge/VS_Code_Insiders-VS_Code_Insiders?style=flat-square&label=Install%20Server&color=24bfa5" alt="Install in VS Code Insiders">](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522chrome-devtools-wrapper%2522%252C%2522config%2522%253A%257B%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522chrome-devtools-mcp-wrapper%2540latest%2522%255D%252C%2522env%2522%253A%257B%257D%257D%257D)
+
+**Or install manually:**
+
+Follow the VS Code [MCP configuration guide](https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server) and use the standard config above, or use the CLI:
+
+For macOS and Linux:
 
 ```bash
 code --add-mcp '{"name":"chrome-devtools-wrapper","command":"npx","args":["-y","chrome-devtools-mcp-wrapper@latest"],"env":{}}'
 ```
 
-**Windows (PowerShell):**
+For Windows (PowerShell):
 
 ```powershell
 code --add-mcp '{"""name""":"""chrome-devtools-wrapper""","""command""":"""npx""","""args""":["""-y""","""chrome-devtools-mcp-wrapper@latest"""]}'
 ```
 
-Or follow the VS Code [MCP configuration guide](https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server) and use the standard config above.
+</details>
+
+<details>
+  <summary>Cursor</summary>
+
+**Click the button to install:**
+
+[<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor">](https://cursor.com/en/install-mcp?name=chrome-devtools-wrapper&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImNocm9tZS1kZXZ0b29scy1tY3Atd3JhcHBlckBsYXRlc3QiXSwiZW52Ijp7fX0)
+
+**Or install manually:**
+
+Go to `Cursor Settings` → `MCP` → `New MCP Server` and paste the standard config above.
 
 </details>
 
@@ -113,6 +142,29 @@ Follow https://docs.cline.bot/mcp/configuring-mcp-servers and use the standard c
 gemini mcp add chrome-devtools-wrapper npx chrome-devtools-mcp-wrapper@latest
 ```
 
+Or globally:
+
+```bash
+gemini mcp add -s user chrome-devtools-wrapper npx chrome-devtools-mcp-wrapper@latest
+```
+
+</details>
+
+<details>
+  <summary>Codex</summary>
+
+Follow the [configure MCP guide](https://developers.openai.com/codex/mcp/#configure-with-the-cli) and use the standard config above.
+
+**On Windows 11**, configure the Chrome install location and increase the startup timeout by updating `.codex/config.toml`:
+
+```toml
+[mcp_servers.chrome-devtools-wrapper]
+command = "cmd"
+args = ["/c", "npx", "-y", "chrome-devtools-mcp-wrapper@latest"]
+env = { SystemRoot="C:\\Windows", PROGRAMFILES="C:\\Program Files" }
+startup_timeout_ms = 20_000
+```
+
 </details>
 
 ## Requirements
@@ -148,7 +200,7 @@ google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-profile
 > [!WARNING]
 > Enabling the remote debugging port exposes a debugging interface that any local application can connect to. Avoid browsing sensitive websites while the port is open.
 
-### 2. Connect the wrapper to your browser
+### 2. Connect to your browser
 
 ```
 switch_browser(url: "9222")
@@ -199,20 +251,6 @@ All other tools come from `chrome-devtools-mcp` and are registered once a browse
 
 ## Configuration options
 
-You can also run `npx chrome-devtools-mcp-wrapper@latest --help` to see all options.
-
-### Multiple browsers
-
-Start multiple Chrome instances on different ports, then route calls dynamically:
-
-```
-switch_browser(url: "9222")           # connects, sets default
-navigate_page(url: "https://prod.example.com")
-
-navigate_page(url: "https://staging.example.com", browserUrl: "9333")  # routes to port 9333
-take_screenshot(browserUrl: "9333")
-```
-
 ### WebSocket endpoint
 
 If you know the exact WebSocket endpoint (from `http://127.0.0.1:9222/json/version` → `webSocketDebuggerUrl`):
@@ -230,6 +268,18 @@ If you know the exact WebSocket endpoint (from `http://127.0.0.1:9222/json/versi
     }
   }
 }
+```
+
+### Multiple browsers
+
+Start multiple Chrome instances on different ports, then route calls dynamically:
+
+```
+switch_browser(url: "9222")
+navigate_page(url: "https://prod.example.com")
+
+navigate_page(url: "https://staging.example.com", browserUrl: "9333")
+take_screenshot(browserUrl: "9333")
 ```
 
 ## How it works
@@ -255,14 +305,10 @@ chrome-devtools-mcp-wrapper
 
 - One `chrome-devtools-mcp` subprocess per browser URL, reused across calls
 - Idle backends are killed after 5 minutes of inactivity
-- The wrapper does not fork upstream — upstream updates are inherited automatically on restart
+- Upstream updates are inherited automatically on restart
 
 ## Relation to upstream
 
-This package wraps [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp) without forking it. It runs the official package as a subprocess via `npx chrome-devtools-mcp@latest`. All 50+ upstream tools are proxied transparently.
+This package wraps [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp) without forking it. All 50+ upstream tools are proxied transparently.
 
 For single-browser use cases, the upstream package is the right choice. Use this wrapper when you need to connect to multiple Chrome instances or switch between them at runtime.
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) (coming soon) or open an issue at [github.com/wtf403/chrome-devtools-mcp/issues](https://github.com/wtf403/chrome-devtools-mcp/issues).
