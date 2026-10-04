@@ -2,3 +2,6 @@ node_modules/
 dist/
 *.js.map
 *.d.ts.map
+# Local upstream checkout for CHROME_DEVTOOLS_MCP_BIN (see README).
+# Clone with: git clone https://github.com/ChromeDevTools/chrome-devtools-mcp upstream/chrome-devtools-mcp
+upstream/

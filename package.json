@@ -1,6 +1,6 @@
 {
   "name": "chrome-devtools-mcp-wrapper",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "MCP wrapper for chrome-devtools-mcp with dynamic multi-browser routing — connect to multiple Chrome instances and switch between them at runtime",
   "type": "module",
   "main": "./dist/index.js",

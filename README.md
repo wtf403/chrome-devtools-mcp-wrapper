@@ -251,6 +251,34 @@ All other tools come from `chrome-devtools-mcp` and are registered once a browse
 
 ## Configuration options
 
+### Local upstream build (unreleased fixes)
+
+By default each backend runs `npx chrome-devtools-mcp@latest`. To run fixes
+that have not been released to npm yet, clone upstream next to this repo,
+build it, and point the wrapper at the local entry script:
+
+```bash
+git clone https://github.com/ChromeDevTools/chrome-devtools-mcp upstream/chrome-devtools-mcp
+cd upstream/chrome-devtools-mcp && npm ci && git submodule update --init && npm run build
+```
+
+```json
+{
+  "mcpServers": {
+    "chrome-devtools-wrapper": {
+      "command": "node",
+      "args": ["/path/to/chrome-devtools-mcp-wrapper/dist/bin.js"],
+      "env": {
+        "CHROME_DEVTOOLS_MCP_BIN": "/path/to/chrome-devtools-mcp-wrapper/upstream/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js"
+      }
+    }
+  }
+}
+```
+
+`upstream/` is intentionally not committed (see `.gitignore`) — it is a local
+dev checkout. Omit `CHROME_DEVTOOLS_MCP_BIN` to go back to `npx …@latest`.
+
 ### WebSocket endpoint
 
 If you know the exact WebSocket endpoint (from `http://127.0.0.1:9222/json/version` → `webSocketDebuggerUrl`):

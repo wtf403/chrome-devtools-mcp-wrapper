@@ -35,6 +35,26 @@ function normalizeBrowserUrl(raw: string): string {
     : raw.trim();
 }
 
+/**
+ * Resolve how to spawn an upstream backend.
+ *
+ * Default (unchanged): `npx -y chrome-devtools-mcp@latest`.
+ *
+ * Opt-in: set CHROME_DEVTOOLS_MCP_BIN to the absolute path of a local
+ * chrome-devtools-mcp entry script (e.g. a vendored upstream build at
+ * `upstream/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js`).
+ * The local file is spawned with `node` instead of going through npx —
+ * useful to run fixes that have not been released to npm yet.
+ */
+function backendSpawn(): {command: string; prefixArgs: string[]} {
+  const localBin = (process.env['CHROME_DEVTOOLS_MCP_BIN'] ?? '').trim();
+  if (localBin) {
+    process.stderr.write(`[wrapper] Using local backend: ${localBin}\n`);
+    return {command: process.execPath, prefixArgs: [localBin]};
+  }
+  return {command: 'npx', prefixArgs: ['-y', 'chrome-devtools-mcp@latest']};
+}
+
 export class BackendPool {
   private backends = new Map<string, BackendEntry>();
   private defaultUrl: string;
@@ -63,11 +83,11 @@ export class BackendPool {
   }
 
   private spawnBackend(browserUrl: string): BackendEntry {
+    const {command, prefixArgs} = backendSpawn();
     const proc = spawn(
-      'npx',
+      command,
       [
-        '-y',
-        'chrome-devtools-mcp@latest',
+        ...prefixArgs,
         `--browserUrl=${browserUrl}`,
         '--no-usage-statistics',
       ],
@@ -145,7 +165,7 @@ export class BackendPool {
       sendRequest('initialize', {
         protocolVersion: '2024-11-05',
         capabilities: {},
-        clientInfo: {name: 'chrome-devtools-mcp-wrapper', version: '0.1.0'},
+        clientInfo: {name: 'chrome-devtools-mcp-wrapper', version: '0.2.0'},
       })
         .then(() => {
           sendNotify('notifications/initialized');
